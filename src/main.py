@@ -10,6 +10,7 @@ from windows.main_window import MainWindow
 
 
 def select_microphone_input():
+    # TODO: Remove this function when implemented config.
     p = pyaudio.PyAudio()
     microphones = []
 
