@@ -37,10 +37,14 @@ def select_microphone_input():
             print("Invalid input. Please enter a valid microphone number.")
 
 
-if __name__ == '__main__':
+def main():
     left_channel_index = select_microphone_input()
     right_channel_index = select_microphone_input()
     app = QtWidgets.QApplication(sys.argv)
     main_window = MainWindow(left_channel_index, right_channel_index)
     main_window.show()
-    sys.exit(app.exec_())
+    app.exec_()
+
+
+if __name__ == '__main__':
+    main()
