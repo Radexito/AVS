@@ -1,7 +1,8 @@
 import pyaudio
-import numpy as np
 from qtpy import QtCore, QtWidgets
-from librosa.feature.rhythm import tempo
+import numpy as np
+import librosa
+from scipy.signal import butter, lfilter
 
 from mic_thread import MicThread
 
@@ -9,7 +10,7 @@ from mic_thread import MicThread
 class StreamController(QtWidgets.QWidget):
     def __init__(self):
         super(StreamController, self).__init__()
-        self.data = np.zeros(100000, dtype=np.int32)
+        self.data = np.zeros(100000, dtype=np.int16)
         self.CHUNK = 1024 * 2
         self.CHANNELS = 1
         self.RATE = 48000
@@ -34,10 +35,22 @@ class StreamController(QtWidgets.QWidget):
         self.bpm_timer.timeout.connect(self.calculate_bpm)
         self.bpm_timer.start(5000)  # Adjust the interval as needed
 
+    def butter_lowpass(self, cutoff, fs, order=5):
+        nyq = 0.5 * fs
+        normal_cutoff = cutoff / nyq
+        b, a = butter(order, normal_cutoff, btype='low', analog=False)
+        return b, a
+
+    def butter_lowpass_filter(self, data, cutoff, fs, order=5):
+        b, a = self.butter_lowpass(cutoff, fs, order=order)
+        y = lfilter(b, a, data)
+        return y
+
     def calculate_bpm(self):
         signal = self.data / np.max(np.abs(self.data))
-        bpm = tempo(y=signal, sr=self.RATE, hop_length=self.CHUNK)
-        self.bpm = bpm.item()
+        signal_filtered = self.butter_lowpass_filter(signal, cutoff=10000, fs=self.RATE)
+        bpm = librosa.beat.beat_track(y=signal_filtered, sr=self.RATE)
+        self.bpm = bpm[0]  # bpm is a tuple, so we take the first element
 
     def append(self, vals):
         vals = np.frombuffer(vals, 'int16')

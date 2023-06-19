@@ -4,6 +4,8 @@ Contact: wysockiradek@gmail.com
 """
 import pyaudio
 import sys
+
+from PySide2.QtCore import Qt
 from qtpy import QtCore, QtGui, QtWidgets
 
 from windows.main_window import MainWindow
@@ -43,6 +45,10 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     main_window = MainWindow(left_channel_index, right_channel_index)
     main_window.show()
+    main_window.setWindowState(Qt.WindowActive)
+    main_window.raise_()
+    main_window.activateWindow()
+
     app.exec_()
 
 
