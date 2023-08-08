@@ -10,6 +10,8 @@ scipy = "*"
 qtpy = "*"
 pyqtgraph = "*"
 librosa = "*"
+pyside6 = "*"
+matplotlib = "*"
 
 [dev-packages]
 

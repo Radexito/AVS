@@ -1,11 +1,35 @@
 import pyqtgraph as pg
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import QThread
+from PySide6.QtCore import Signal
+from PySide6 import QtCore, QtWidgets
+import matplotlib.pyplot as plt
+from PySide6.QtGui import QAction
 
 from stream_controller import StreamController
 from windows.options import OptionsWindow
 
 
+class UpdateLeftChannelThread(QThread):
+    update_left_channel_signal = Signal()
+
+    def run(self):
+        while True:
+            self.update_left_channel_signal.emit()
+            self.msleep(1)
+
+
+class UpdateRightChannelThread(QThread):
+    update_right_channel_signal = Signal()
+
+    def run(self):
+        while True:
+            self.update_right_channel_signal.emit()
+            self.msleep(1)
+
+
 class MainWindow(QtWidgets.QMainWindow):
+    cmap = plt.get_cmap('coolwarm')
+
     def __init__(self, left_channel_index, right_channel_index):
         super(MainWindow, self).__init__()
 
@@ -21,28 +45,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setTitle("File")
 
-        self.actionOptions = QtWidgets.QAction(self)
+        self.actionOptions = QAction(self)
         self.actionOptions.setText("Options")
         self.actionOptions.triggered.connect(self.file_menu_options_clicked)
 
         self.menuFile.addAction(self.actionOptions)
         self.menubar.addAction(self.menuFile.menuAction())
 
-        self.left_channel_timer = QtCore.QTimer()
-        self.left_channel_timer.timeout.connect(self.update_left_channel_ui)
-        self.left_channel_timer.start(10)
+        self.update_left_thread = UpdateLeftChannelThread()
+        self.update_left_thread.update_left_channel_signal.connect(self.update_left_channel_ui)
 
-        self.right_channel_timer = QtCore.QTimer()
-        self.right_channel_timer.timeout.connect(self.update_right_channel_ui)
-        self.right_channel_timer.start(10)
+        self.update_right_thread = UpdateRightChannelThread()
+        self.update_right_thread.update_right_channel_signal.connect(self.update_right_channel_ui)
 
         self.setCentralWidget(self.centralwidget)
 
-        self.left_channel_waveform = pg.PlotWidget()
+        self.left_channel_waveform = pg.PlotWidget(parent=self)
         self.left_channel_waveform.plotItem.hideAxis('bottom')
         self.left_channel_waveform.plotItem.hideAxis('left')
 
-        self.right_channel_waveform = pg.PlotWidget()
+        self.right_channel_waveform = pg.PlotWidget(parent=self)
         self.right_channel_waveform.plotItem.hideAxis('bottom')
         self.right_channel_waveform.plotItem.hideAxis('left')
 
@@ -67,8 +89,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.verticalLayout.addWidget(self.left_bpm_label)
         self.verticalLayout.addWidget(self.right_bpm_label)
 
-        self.left_channel_sc.setup_stream(left_channel_index)
-        self.right_channel_sc.setup_stream(right_channel_index)
+        self.update_left_thread.start()
+        self.update_right_thread.start()
 
     def file_menu_options_clicked(self):
         self.options_window = OptionsWindow()

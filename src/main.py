@@ -5,8 +5,8 @@ Contact: wysockiradek@gmail.com
 import pyaudio
 import sys
 
-from PySide2.QtCore import Qt
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtWidgets
+from PySide6.QtGui import Qt
 
 from windows.main_window import MainWindow
 
