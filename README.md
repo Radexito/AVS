@@ -9,17 +9,3 @@ To capture the output from each deck, an audio interface or USB mixer is necessa
 # Features:
 Display waveform for each deck.
 Display BPM for each deck.
-
-# WIP:
-Pyaudio crashes from buffer overflow + wierd artifacts are present.
-
-# TODO:
-rewrite the system that spawns waveforms for each deck with a for loop
-Pyaudio crashes from buffer overflow + wierd artifacts are present.
-Add config GUI + file with names of audio interface inputs
-BPM Possibly could be improved by using LPF.
-Display could be improved by colouring the waveform using spectrum.
-Disable autoscaling, add setting for sensitivity
-add zoom levels.
-Make GUI to look like friendly DJ Software
-Display key
