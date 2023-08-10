@@ -1,3 +1,4 @@
+![image](img/screen.png)
 # AVS - Analog Vinyl System
 This application is specifically crafted to assist novice DJs in their journey of mixing by utilizing authentic vinyl 
 records, similar to DVS (Digital Vinyl System). Instead of employing timecode vinyls, it functions by streaming audio 
