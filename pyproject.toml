@@ -36,3 +36,10 @@ exclude = [
     "build*",
     "dist*",
 ]
+
+[tool.coverage.run]
+source = ["avs"]
+omit = [".venv/*", "*/site-packages/*"]
+
+[tool.coverage.report]
+show_missing = true
