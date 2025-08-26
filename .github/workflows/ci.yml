@@ -30,16 +30,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Install uv (and enable caching of wheels/artifacts)
       - name: Set up uv
         uses: astral-sh/setup-uv@v1
 
-      # Have uv install the requested Python version
-      - name: Install Python ${{ matrix.python-version }} with uv
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Show versions
         run: |
-          uv python install ${{ matrix.python-version }}
-          uv --version
           python --version
+          uv --version
 
       - name: Ruff
         uses: astral-sh/ruff-action@v3.5.1
@@ -53,13 +55,15 @@ jobs:
             portaudio19-dev libasound2-dev \
             xvfb
 
-      # Create a project venv and sync deps with uv
       - name: Sync dependencies with uv
         run: |
-          # Create a local .venv managed by uv
           uv venv .venv
-          # Prefer project metadata if present; otherwise sync from requirements.txt
-          uv sync --frozen || uv sync
+          if [ -f pyproject.toml ]; then
+            # Use lock if present; otherwise resolve
+            if [ -f uv.lock ]; then uv sync --frozen; else uv sync; fi
+          else
+            echo "No pyproject.toml found"; exit 1
+          fi
 
       - name: Bandit (non-blocking)
         continue-on-error: true
