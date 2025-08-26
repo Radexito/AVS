@@ -105,10 +105,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.left_pdataitem.setData(self.left_channel_sc.data)
 
         # Update the BPM label
-        self.left_bpm_label.setText(f"LBPM: {self.left_channel_sc.bpm:.2f}")
+        bpm = float(self.left_channel_sc.bpm)
+        self.left_bpm_label.setText(f"LBPM: {bpm:.2f}")
 
     def update_right_channel_ui(self):
         self.right_pdataitem.setData(self.right_channel_sc.data)
 
         # Update the BPM label
-        self.right_bpm_label.setText(f"RBPM: {self.right_channel_sc.bpm:.2f}")
+        bpm = float(self.right_channel_sc.bpm)
+        self.right_bpm_label.setText(f"RBPM: {bpm:.2f}")
