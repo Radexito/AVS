@@ -4,7 +4,7 @@ import numpy as np
 import librosa
 from scipy.signal import butter, lfilter
 
-from mic_thread import MicThread
+from avs.mic_thread import MicThread
 
 
 class StreamController(QtWidgets.QWidget):
