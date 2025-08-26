@@ -1,7 +1,4 @@
-import pyqtgraph as pg
-from qtpy import QtCore, QtGui, QtWidgets
-
-from stream_controller import StreamController
+from qtpy import QtWidgets
 
 
 class OptionsWindow(QtWidgets.QMainWindow):

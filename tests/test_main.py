@@ -1,10 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
-from qtpy import QtWidgets
-
-import main
-from windows.main_window import MainWindow
+from avs import main
 
 
 class TestMain(TestCase):
