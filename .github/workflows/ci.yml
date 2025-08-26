@@ -26,6 +26,7 @@ jobs:
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
       PYTHONDONTWRITEBYTECODE: "1"
       QT_QPA_PLATFORM: "offscreen"
+      COVERAGE_MIN: "36"
 
     steps:
       - uses: actions/checkout@v4
@@ -77,4 +78,6 @@ jobs:
       - name: Run pytests
         run: |
           xvfb-run -a -s "-screen 0 1920x1080x24" \
-            uv run pytest -q --maxfail=1 --disable-warnings --cov=./ --cov-report=term-missing
+            uv run pytest -q --maxfail=1 --disable-warnings \
+            --cov=avs --cov-report=term-missing \
+            --cov-fail-under=${COVERAGE_MIN}
