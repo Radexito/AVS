@@ -1,0 +1,83 @@
+name: Python CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.13"]
+
+    env:
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+      QT_QPA_PLATFORM: "offscreen"
+      COVERAGE_MIN: "31"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install system packages (for PyAudio & Qt headless)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            portaudio19-dev libasound2-dev \
+            xvfb \
+            libegl1 libgl1 libopengl0 \
+            libxkbcommon-x11-0 libxcb-xinerama0 libxcb-cursor0 \
+            fonts-dejavu-core
+      
+
+      - name: Sync dependencies with uv
+        run: |
+          uv venv .venv
+          if [ -f pyproject.toml ]; then
+            if [ -f uv.lock ]; then
+              uv sync --frozen --group dev
+            else
+              uv sync --group dev
+            fi
+          else
+            echo "No pyproject.toml found"; exit 1
+          fi
+
+      - name: Ruff
+        uses: astral-sh/ruff-action@v3.5.1
+        with:
+          args: "check --output-format=github ."
+
+      - name: Bandit
+        continue-on-error: true
+        run: |
+          uvx bandit -r avs -x tests
+
+      - name: Run pytests
+        run: |
+          xvfb-run -a -s "-screen 0 1920x1080x24" \
+            uv run pytest -q --maxfail=1 --disable-warnings \
+            --cov=avs --cov-report=term-missing \
+            --cov-fail-under=${COVERAGE_MIN}
