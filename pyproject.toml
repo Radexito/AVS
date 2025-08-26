@@ -21,6 +21,8 @@ dependencies = [
 dev = [
     "ruff",
     "bandit",
+    "pytest",
+    "pytest-cov"
 ]
 
 [tool.setuptools.packages.find]
