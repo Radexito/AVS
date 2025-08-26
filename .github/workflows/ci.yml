@@ -41,6 +41,14 @@ jobs:
         with:
           args: "check --output-format=github ."
 
+      - name: Install system packages (for PyAudio & Qt headless)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            portaudio19-dev libasound2-dev \
+            xvfb
+      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
