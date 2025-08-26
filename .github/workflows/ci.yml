@@ -38,16 +38,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Show versions
-        run: |
-          python --version
-          uv --version
-
-      - name: Ruff
-        uses: astral-sh/ruff-action@v3.5.1
-        with:
-          args: "check --output-format=github ."
-
       - name: Install system packages (for PyAudio & Qt headless)
         run: |
           sudo apt-get update
@@ -65,10 +55,15 @@ jobs:
             echo "No pyproject.toml found"; exit 1
           fi
 
-      - name: Bandit (non-blocking)
+      - name: Ruff
+        uses: astral-sh/ruff-action@v3.5.1
+        with:
+          args: "check --output-format=github ."
+
+      - name: Bandit
         continue-on-error: true
         run: |
-          uvx bandit -r . -x tests
+          uvx bandit -r avs -x tests
 
       - name: Run pytests
         run: |
