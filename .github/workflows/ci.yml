@@ -50,7 +50,7 @@ jobs:
           uv venv .venv
           if [ -f pyproject.toml ]; then
             # Use lock if present; otherwise resolve
-            if [ -f uv.lock ]; then uv sync --frozen --dev; else uv sync --dev; fi
+            if [ -f uv.lock ]; then uv sync --frozen --group dev; else uv sync --group dev; fi
           else
             echo "No pyproject.toml found"; exit 1
           fi
