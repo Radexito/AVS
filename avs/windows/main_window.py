@@ -84,10 +84,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.right_channel_sc.setup_stream(right_channel_index)
 
         self.left_bpm_label = QtWidgets.QLabel("LBPM: -")
+        self.left_key_label = QtWidgets.QLabel("LKEY: -")
         self.right_bpm_label = QtWidgets.QLabel("RBPM: -")
+        self.right_key_label = QtWidgets.QLabel("RKEY: -")
 
         self.verticalLayout.addWidget(self.left_bpm_label)
+        self.verticalLayout.addWidget(self.left_key_label)
         self.verticalLayout.addWidget(self.right_bpm_label)
+        self.verticalLayout.addWidget(self.right_key_label)
 
         self.update_left_thread.start()
         self.update_right_thread.start()
@@ -108,9 +112,13 @@ class MainWindow(QtWidgets.QMainWindow):
         bpm = float(self.left_channel_sc.bpm)
         self.left_bpm_label.setText(f"LBPM: {bpm:.2f}")
 
+        # Update the key:
+        self.left_key_label.setText(f"LKEY: {self.left_channel_sc.key}")
+
     def update_right_channel_ui(self):
         self.right_pdataitem.setData(self.right_channel_sc.data)
 
         # Update the BPM label
         bpm = float(self.right_channel_sc.bpm)
         self.right_bpm_label.setText(f"RBPM: {bpm:.2f}")
+        self.right_key_label.setText(f"RKEY: {self.right_channel_sc.key}")

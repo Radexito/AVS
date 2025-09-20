@@ -2,6 +2,8 @@
 Author: Radosław Wysocki
 Contact: wysockiradek@gmail.com
 """
+import logging
+
 import pyaudio
 import sys
 
@@ -40,6 +42,7 @@ def select_microphone_input():
 
 
 def main():
+    logging.basicConfig(level=10, filename="log.txt")
     left_channel_index = select_microphone_input()
     right_channel_index = select_microphone_input()
     app = QtWidgets.QApplication(sys.argv)
