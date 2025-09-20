@@ -5,8 +5,8 @@ from PySide6 import QtCore, QtWidgets
 import matplotlib.pyplot as plt
 from PySide6.QtGui import QAction
 
-from avs.stream_controller import StreamController
-from avs.windows.options import OptionsWindow
+from avs.widgets.stream_controller import StreamController
+from avs.widgets.options import OptionsWindow
 
 
 class UpdateLeftChannelThread(QThread):
