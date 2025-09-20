@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import importlib
 import io
-import sys
 import traceback
 import types
 import unittest
